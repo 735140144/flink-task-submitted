@@ -6,10 +6,12 @@
 import json
 import random
 import time
-import pandas as pd
-from pandas.io.json import json_normalize
 import requests
+from kafka import KafkaProducer
 
+bootstrap_servers = ['172.16.0.101:9092', '172.16.0.102:9092', '172.16.0.103:9092']
+topic = 'daily_test'
+producer = KafkaProducer(bootstrap_servers=bootstrap_servers,value_serializer=lambda m: json.dumps(m).encode("utf-8"))
 first = random.randint(1, 100)
 second = random.randrange(10240652803365012748, 12240652803365012748)
 time_time = int(time.time() * 1000)
@@ -26,7 +28,11 @@ if res.status_code == 200:
     page_content = res.text
     split_ = page_content.split(query)[1].split("(")[1].split(");")[0]
     diff_ = json.loads(split_)['data']['diff']
-    for n in range(0,len(diff_)):
+    for n in range(0, len(diff_)):
         print(diff_[n])
+        producer.send(topic,diff_[0])
+
+    producer.close()
+
         # df.insert(diff_[n])
     # print(df)
