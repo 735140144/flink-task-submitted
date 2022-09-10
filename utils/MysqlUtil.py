@@ -147,8 +147,8 @@ class MySqLUtil(object):
 
 
 class PandasMysql:
-    def engine_create(self, host, user, passwd, db):
-        return create_engine('mysql+pymysql://' + user + ':' + passwd + '@' + host + ':3306/' + db)
+    def engine_create(self, host, user, passwd, port,db):
+        return create_engine('mysql+pymysql://' + user + ':' + passwd + '@' + host + ':'+port+'/' + db)
 # if __name__ == '__main__':
 # db = MySqLHelper()
 # TODO查询单条

@@ -33,28 +33,39 @@ class HOST:
             return 'sql.hhdljt.com'
 
     def nas(self):
-        if self.__getIp() == '192.168.0':
-            return '192.168.0.173'
+        if self.__getIp() == '172.16.0':
+            return '172.16.0.173'
         else:
             return 'nas.hhdljt.com'
 
 
 MYSQL_PORT = 3306
 MYSQL_PORT_STRING = '3306'
-HADOOP102_HOST = '192.168.233.102'
+
+HADOOP102_POST = '3306'
+HADOOP102_HOST = '172.16.0.101'
 HADOOP102_MYSQL_USER = 'root'
-HADOOP102_MYSQL_PASSWD = 'ssymhp'
+HADOOP102_MYSQL_PASSWD = 'Ssymhp12#$'
 HADOOP102_DB = 'ASHARE'
+
 TENCENT_HOST = HOST().tencent()
 TENCENT_USER = 'root'
 TENCENT_PSAAWD = 'Ssymhp12#$'
 TENCENT_DB='ASHARE'
+
 NAS_HOST1 = HOST().nas()
 NAS_HOST2 = 'nas.hhdljt.com'
 NAS_USER = 'root'
 NAS_PASSWD = 'ssymhp'
+
 MONGO_HOST = '120.48.27.119'
 MONGO_USER = 'root'
 MONGO_PASSWD = 'ssymhp'
 MONGO_PORT = '27017'
 MONGO_DB = 'admin'
+
+DORIS_PORT = '9030'
+DORIS_HOST = '172.16.0.101'
+DORIS_USER = 'root'
+DORIS_PASSWD = 'Ssymhp12#$'
+DORIS_DB = 'day_data'

@@ -6,19 +6,24 @@
 import json
 import random
 import time
+
 import requests
 from kafka import KafkaProducer
 
+
 def kafkaConf():
     bootstrap_servers = ['172.16.0.101:9092', '172.16.0.102:9092', '172.16.0.103:9092']
-    producer = KafkaProducer(bootstrap_servers=bootstrap_servers,value_serializer=lambda m: json.dumps(m).encode("utf-8"))
+    producer = KafkaProducer(bootstrap_servers=bootstrap_servers,
+                             value_serializer=lambda m: json.dumps(m).encode("utf-8"))
     return producer
 
-def sendKafka(topic,value):
-    kafkaConf().send(topic,value)
+
+def sendKafka(topic, value):
+    kafkaConf().send(topic, value)
     return
 
-def getseconddata(topic):
+
+def getseconddata(topic, proxies):
     global diff_
     first = random.randint(1, 100)
     second = random.randrange(10240652803365012748, 12240652803365012748)
@@ -30,16 +35,35 @@ def getseconddata(topic):
 
     header = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-    res = requests.get(page_url, headers=header, timeout=10)
+    res = requests.get(page_url, headers=header, proxies=proxies, timeout=10)
     if res.status_code == 200:
         page_content = res.text
         split_ = page_content.split(query)[1].split("(")[1].split(");")[0]
         loads = json.loads(split_)
         loads["time"] = time_time
         print(loads)
-        sendKafka(topic, diff_)
+        sendKafka(topic, loads)
+    else:
+        raise Exception("错误")
 
 
-if __name__ =="__main__":
-    topic = 'daily_test'
-    getseconddata(topic)
+def getbalance():
+    page_e = "https://wapi.http.linkudp.com/index/index/get_my_balance?neek=2173527&appkey=5eb7b69a345bd648968f17698b1be2fd"
+    get = requests.get(page_e)
+    text = get.json()
+    return text['data']['balance']
+
+
+def getip():
+    print("获取代理ip")
+    page_ip = "http://webapi.http.zhimacangku.com/getip?num=1&type=2&pro=&city=0&yys=0&port=1&time=1&ts=0&ys=0&cs=0&lb=1&sb=0&pb=4&mr=1&regions="
+    ipurl = requests.get(page_ip)
+    json = ipurl.json()
+    ip = json['data'][0]['ip'] +":"+str(json['data'][0]['port'])
+    proxies = {
+        "http": ip,
+        "https": ip
+    }
+    print("获得ip"+str(proxies))
+    return proxies
+

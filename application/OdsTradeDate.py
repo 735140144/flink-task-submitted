@@ -14,18 +14,18 @@ from datetime import datetime
 
 
 class OdsTradeDate:
-    def getTradeDate(self):
-        year = datetime.now().strftime('%Y')
-        return TuShare.tushare_api.trade_cal(xchange='', start_date=year + '0101', end_date=year + '1231', is_open='1')
+    def getTradeDate(self,year):
+        return TuShare.tushare_api.trade_cal(xchange='', start_date=str(year) + '0101', end_date=str(year) + '1231', is_open='1')
 
 
 if __name__ == "__main__":
-    ListName = 'ods_trade_date'
+    ListName = 'open_trade_date'
     If_Exists = 'append'
-    df = OdsTradeDate().getTradeDate()
-    Engine = Mysql.PandasMysql().engine_create(AC.TENCENT_HOST, AC.TENCENT_USER, AC.TENCENT_PSAAWD, AC.TENCENT_DB)
+    Engine = Mysql.PandasMysql().engine_create(AC.HADOOP102_HOST, AC.HADOOP102_MYSQL_USER, AC.HADOOP102_MYSQL_PASSWD,
+                                               AC.HADOOP102_POST, AC.HADOOP102_DB)
+    # for year in range(2000,2030):
+    year = '2023'
+    df = OdsTradeDate().getTradeDate(year)
     df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
     Engine.dispose()
     date = datetime.now().strftime('%Y%m%d')
-    sql = 'update update_record set date = %s where table_name = %s;'
-    Mysql.MySqLUtil().update(sql, (date, ListName))
