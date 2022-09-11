@@ -11,11 +11,11 @@ import pymysql
 import common.AshareConfig
 
 # 数据库信息
-DB_TEST_HOST = common.AshareConfig.TENCENT_HOST
-DB_TEST_PORT = 3306
-DB_TEST_DBNAME = "ASHARE"
-DB_TEST_USER = common.AshareConfig.TENCENT_USER
-DB_TEST_PASSWORD = common.AshareConfig.TENCENT_PSAAWD
+DB_TEST_HOST = common.AshareConfig.DORIS_HOST
+DB_TEST_PORT = 9030
+DB_TEST_DBNAME = "day_data"
+DB_TEST_USER = common.AshareConfig.DORIS_USER
+DB_TEST_PASSWORD = common.AshareConfig.DORIS_PASSWD
 
 # 数据库连接编码
 DB_CHARSET = "utf8"

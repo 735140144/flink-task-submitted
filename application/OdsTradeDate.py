@@ -15,7 +15,17 @@ from datetime import datetime
 
 class OdsTradeDate:
     def getTradeDate(self,year):
-        return TuShare.tushare_api.trade_cal(xchange='', start_date=str(year) + '0101', end_date=str(year) + '1231', is_open='1')
+        TuShare.tushare_api.trade_cal(xchange='', start_date=str(year) + '0101', end_date=str(year) + '1231', is_open='1')
+        ListName = 'open_trade_date'
+        If_Exists = 'append'
+        Engine = Mysql.PandasMysql().engine_create(AC.HADOOP102_HOST, AC.HADOOP102_MYSQL_USER,
+                                                   AC.HADOOP102_MYSQL_PASSWD,
+                                                   AC.HADOOP102_POST, AC.HADOOP102_DB)
+        # for year in range(2000,2030):
+        year = '2023'
+        df = OdsTradeDate().getTradeDate(year)
+        df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
+        Engine.dispose()
 
 
 if __name__ == "__main__":

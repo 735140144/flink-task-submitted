@@ -19,11 +19,11 @@ class OdsCodeList:
 
 
 if __name__ == "__main__":
-    ListName = 'ods_code_list'
-    If_Exists = 'replace'
+    ListName = 'ODS_CODE_LIST'
+    If_Exists = 'append'
     df = OdsCodeList().get_code_list()
     df = df.drop(df[df['market'] == '北交所'].index).reset_index(drop=True)
-    Engine = Mysql.PandasMysql().engine_create(AC.TENCENT_HOST,AC.TENCENT_USER,AC.TENCENT_PSAAWD,AC.TENCENT_DB)
+    Engine = Mysql.PandasMysql().engine_create(AC.DORIS_HOST,AC.DORIS_USER,AC.DORIS_PASSWD,AC.DORIS_PORT,AC.DORIS_DB)
     df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
     Engine.dispose()
 
