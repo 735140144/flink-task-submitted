@@ -76,17 +76,15 @@ class OdsDateLineInit:
         ENGINE.dispose()
         return df
 
-
-
 if __name__ == "__main__":
     codelist = OdsDateLineInit().read_list()
     end_date = datetime.now().strftime('%Y%m%d')
     for ts_code in codelist.index:
         start_date = codelist.loc[ts_code]['list_date']
-        df = OdsDateLineInit().merge_all(ts_code, '20000101', end_date)
-        topic = "ods_date_line_test"
-        json = df.to_json(orient='records')
-        print(json)
-        kf.sendKafka(topic,json)
-        heartbeat.heartbeat("OdsDateLineInit")
+        for year in range(int(start_date[0:4]),2023):
+            df = OdsDateLineInit().merge_all(ts_code, str(year)+"0101", str(year)+"1231")
+            topic = "ods_date_line"
+            json = df.to_json(orient='records')
+            kf.sendKafka(topic,json)
+            heartbeat.heartbeat("OdsDateLineInit")
 
