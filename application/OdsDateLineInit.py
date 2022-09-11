@@ -13,6 +13,7 @@ import utils.MongoUtil
 import utils.MysqlUtil
 import utils.TuShareApi
 import utils.KafkaUtil as kf
+from utils import heartbeat
 
 class OdsDateLineInit:
     def get_Dateline(self, ts_code, start_date, end_date):
@@ -70,7 +71,7 @@ class OdsDateLineInit:
     def read_list(self):
         ENGINE = utils.MysqlUtil.PandasMysql().engine_create(AC.HADOOP102_HOST, AC.HADOOP102_MYSQL_USER, AC.HADOOP102_MYSQL_PASSWD,
                                                              AC.HADOOP102_PORT,AC.HADOOP102_DB)
-        sql = 'select ts_code,list_date from ods_code_list;'
+        sql = 'select ts_code,list_date from ODS_CODE_LIST;'
         df = pd.read_sql(sql, ENGINE).set_index('ts_code')
         ENGINE.dispose()
         return df
@@ -82,7 +83,10 @@ if __name__ == "__main__":
     end_date = datetime.now().strftime('%Y%m%d')
     for ts_code in codelist.index:
         start_date = codelist.loc[ts_code]['list_date']
-        df = OdsDateLineInit().merge_all(ts_code, '20000101', end_date).to_json(orient='records')
-        topic = "ods_date_line"
-        kf.sendKafka(topic,df)
+        df = OdsDateLineInit().merge_all(ts_code, '20000101', end_date)
+        topic = "ods_date_line_test"
+        json = df.to_json(orient='records')
+        print(json)
+        kf.sendKafka(topic,json)
+        heartbeat.heartbeat("OdsDateLineInit")
 
