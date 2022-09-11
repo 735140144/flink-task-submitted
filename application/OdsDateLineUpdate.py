@@ -79,15 +79,17 @@ class OdsDateLineUpdate:
 
 
 today = datetime.now().strftime('%Y%m%d')
-if __name__ == "__main__":
-    read_list = OdsDateLineUpdate().read_list()
-    ListName = "ods_date_line"
-    If_Exists = "append"
-    Engine = utils.MysqlUtil.PandasMysql().engine_create(AC.TENCENT_HOST, AC.TENCENT_USER, AC.TENCENT_PSAAWD,
-                                                         AC.TENCENT_DB)
-    for date in read_list.cal_date:
-        df = OdsDateLineUpdate().merge_all(date)
-        df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
-    Engine.dispose()
-    sql = 'update update_record set date = ' + today + ' where table_name = \'ods_date_line\' ;'
-    utils.MysqlUtil.MySqLUtil().update(sql)
+json = OdsDateLineUpdate().merge_all('20220909').to_json(orient='records')
+print(json)
+# if __name__ == "__main__":
+#     read_list = OdsDateLineUpdate().read_list()
+#     ListName = "ods_date_line"
+#     If_Exists = "append"
+#     Engine = utils.MysqlUtil.PandasMysql().engine_create(AC.TENCENT_HOST, AC.TENCENT_USER, AC.TENCENT_PSAAWD,
+#                                                          AC.TENCENT_DB)
+#     for date in read_list.cal_date:
+#         df = OdsDateLineUpdate().merge_all(date)
+#         df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
+#     Engine.dispose()
+#     sql = 'update update_record set date = ' + today + ' where table_name = \'ods_date_line\' ;'
+#     utils.MysqlUtil.MySqLUtil().update(sql)

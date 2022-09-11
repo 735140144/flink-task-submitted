@@ -9,6 +9,7 @@ Copyright (c) 2022 person All rights reserved.
 """
 import utils.TuShareApi as TuShare
 import utils.MysqlUtil as Mysql
+import utils.heartbeat as heartbeat
 import common.AshareConfig as AC
 
 
@@ -20,10 +21,11 @@ class OdsCodeList:
 
 if __name__ == "__main__":
     ListName = 'ODS_CODE_LIST'
-    If_Exists = 'append'
+    If_Exists = 'replace'
     df = OdsCodeList().get_code_list()
     df = df.drop(df[df['market'] == '北交所'].index).reset_index(drop=True)
-    Engine = Mysql.PandasMysql().engine_create(AC.DORIS_HOST,AC.DORIS_USER,AC.DORIS_PASSWD,AC.DORIS_PORT,AC.DORIS_DB)
+    Engine = Mysql.PandasMysql().engine_create(AC.HADOOP102_HOST,AC.HADOOP102_MYSQL_USER,AC.HADOOP102_MYSQL_PASSWD,AC.HADOOP102_PORT,AC.HADOOP102_DB)
     df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
+    heartbeat.heartbeat("OdsCodeList")
     Engine.dispose()
 

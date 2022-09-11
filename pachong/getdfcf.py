@@ -6,7 +6,6 @@
 import json
 import random
 import time
-from datetime import datetime
 import requests
 from kafka import KafkaProducer
 from retry import retry
@@ -76,7 +75,7 @@ def getTradeDate(year):
     If_Exists = 'replace'
     Engine = Mysql.PandasMysql().engine_create(AC.HADOOP102_HOST, AC.HADOOP102_MYSQL_USER,
                                                AC.HADOOP102_MYSQL_PASSWD,
-                                               AC.HADOOP102_POST, AC.HADOOP102_DB)
+                                               AC.HADOOP102_PORT, AC.HADOOP102_DB)
     df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
     Engine.dispose()
     return
@@ -85,7 +84,7 @@ def checkDate():
     sql = "select cal_date,is_open from open_trade_date"
     Engine = Mysql.PandasMysql().engine_create(AC.HADOOP102_HOST, AC.HADOOP102_MYSQL_USER,
                                                AC.HADOOP102_MYSQL_PASSWD,
-                                               AC.HADOOP102_POST, AC.HADOOP102_DB)
+                                               AC.HADOOP102_PORT, AC.HADOOP102_DB)
     df = pd.read_sql(sql, Engine)
     Engine.dispose()
     return df
@@ -93,7 +92,3 @@ def checkDate():
 def check(df,date):
     return df.loc[df['cal_date'] == date].iat[0, 1]
 
-def heartbeat(jobname):
-    strftime = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    sql = "insert into day_data.JOB_HEART values(%s,%s)"
-    Mysql.MySqLUtil().selectone(sql,(jobname,strftime))
