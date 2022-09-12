@@ -1,8 +1,6 @@
 import time
 from datetime import datetime
-
 from retry import retry
-
 import getdfcf
 
 
@@ -13,6 +11,7 @@ import getdfcf
 @retry()
 def geti(topic):
     proxies = getdfcf.getip()
+    print(datetime.now().strftime('%Y%m%d'))
     getdfcf.getTradeDate(time.localtime(time.time()).tm_year)
     df = getdfcf.checkDate()
     while 1 == 1:
@@ -21,7 +20,7 @@ def geti(topic):
         if is_open == 1:
             do(topic, proxies)
         else:
-            print(1)
+            print("非交易时间")
             time.sleep(3600)
 
 
