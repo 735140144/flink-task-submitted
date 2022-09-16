@@ -46,6 +46,7 @@ def do(topic, proxies):
             elif localtime.tm_hour == 15 and localtime.tm_min == 0 and localtime.tm_sec == 0:
                 getdfcf.getseconddata(topic, proxies)
             else:
+                time.sleep(60)
                 break
         except:
             raise Exception("错误")

@@ -9,7 +9,6 @@ import pandas as pd
 
 import common.AshareConfig as AC
 from retry import retry
-import utils.MongoUtil
 import utils.MysqlUtil
 import utils.TuShareApi
 import utils.KafkaUtil as kf
@@ -81,8 +80,9 @@ if __name__ == "__main__":
     end_date = datetime.now().strftime('%Y%m%d')
     for ts_code in codelist.index:
         start_date = codelist.loc[ts_code]['list_date']
-        for year in range(int(start_date[0:4]),2023):
-            df = OdsDateLineInit().merge_all(ts_code, str(year)+"0101", str(year)+"1231")
+        for year in range(int(start_date[0:4]),2023,10):
+            endyear = min(year+10,2023)
+            df = OdsDateLineInit().merge_all(ts_code, str(year)+"0101", str(endyear)+"1231")
             topic = "ods_date_line"
             json = df.to_json(orient='records')
             kf.sendKafka(topic,json)

@@ -12,7 +12,7 @@ import common.AshareConfig
 
 # 数据库信息
 DB_TEST_HOST = common.AshareConfig.DORIS_HOST
-DB_TEST_PORT = 9030
+DB_TEST_PORT = 19030
 DB_TEST_DBNAME = "day_data"
 DB_TEST_USER = common.AshareConfig.DORIS_USER
 DB_TEST_PASSWORD = common.AshareConfig.DORIS_PASSWD
