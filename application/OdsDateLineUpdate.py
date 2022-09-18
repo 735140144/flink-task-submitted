@@ -8,11 +8,13 @@ from datetime import datetime
 
 import pandas as pd
 
-import common.AshareConfig as AC
-import function.write_into_mongo
+import utils.KafkaUtil as kf
+from utils import heartbeat
 import utils.MongoUtil
 import utils.MysqlUtil
 import utils.TuShareApi
+import utils.MysqlUtil as mysql
+from pachong import getdfcf
 
 
 class OdsDateLineUpdate:
@@ -65,31 +67,19 @@ class OdsDateLineUpdate:
             regex='^(?!.*_DROP)')
         return list_all
 
-    def read_list(self):
-        ENGINE = utils.MysqlUtil.PandasMysql().engine_create(AC.TENCENT_HOST, AC.TENCENT_USER, AC.TENCENT_PSAAWD,
-                                                             AC.TENCENT_DB)
-        sql = 'select cal_date from ods_trade_date;'
-        df = pd.read_sql(sql, ENGINE)
-        sql2 = 'select date from update_record where table_name = \'ods_date_line\';'
-        DBDate = pd.read_sql(sql2, ENGINE).iat[0, 0]
-        ENGINE.dispose()
-        df.drop(df[df['cal_date'] < DBDate].index, inplace=True)
-        df.drop(df[df['cal_date'] > today].index, inplace=True)
-        return df
 
 
-today = datetime.now().strftime('%Y%m%d')
-json = OdsDateLineUpdate().merge_all('20220909').to_json(orient='records')
-print(json)
-# if __name__ == "__main__":
-#     read_list = OdsDateLineUpdate().read_list()
-#     ListName = "ods_date_line"
-#     If_Exists = "append"
-#     Engine = utils.MysqlUtil.PandasMysql().engine_create(AC.TENCENT_HOST, AC.TENCENT_USER, AC.TENCENT_PSAAWD,
-#                                                          AC.TENCENT_DB)
-#     for date in read_list.cal_date:
-#         df = OdsDateLineUpdate().merge_all(date)
-#         df.to_sql(name=ListName, con=Engine, if_exists=If_Exists, index=False)
-#     Engine.dispose()
-#     sql = 'update update_record set date = ' + today + ' where table_name = \'ods_date_line\' ;'
-#     utils.MysqlUtil.MySqLUtil().update(sql)
+date = getdfcf.checkDate()
+sql = "select max(trade_date) from day_data.DAY_DATA_LINE"
+selectone = int(mysql.MySqLUtil().selectone(sql)[0])
+end_date = datetime.now().strftime('%Y%m%d')
+undefday = date[(date['cal_date'] > str(selectone)) & (date['cal_date'] <= end_date)]
+for i in undefday['cal_date']:
+    is_open = getdfcf.check(date, i)
+    if is_open == 1 :
+        df = OdsDateLineUpdate().merge_all(date)
+        topic = "ods_date_line"
+        json = df.to_json(orient='records')
+        kf.sendKafka(topic, json)
+        heartbeat.heartbeat("OdsDateLineInit")
+
