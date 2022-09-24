@@ -77,7 +77,7 @@ undefday = date[(date['cal_date'] > str(selectone)) & (date['cal_date'] <= end_d
 for i in undefday['cal_date']:
     is_open = getdfcf.check(date, i)
     if is_open == 1 :
-        df = OdsDateLineUpdate().merge_all(date)
+        df = OdsDateLineUpdate().merge_all(i)
         topic = "ods_date_line"
         json = df.to_json(orient='records')
         kf.sendKafka(topic, json)
