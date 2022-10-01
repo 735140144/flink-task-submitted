@@ -122,7 +122,7 @@
    <property name="geometry">
     <rect>
      <x>710</x>
-     <y>370</y>
+     <y>420</y>
      <width>101</width>
      <height>31</height>
     </rect>
@@ -325,7 +325,7 @@
    <property name="geometry">
     <rect>
      <x>510</x>
-     <y>360</y>
+     <y>410</y>
      <width>191</width>
      <height>41</height>
     </rect>
@@ -446,6 +446,19 @@
     </rect>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>340</y>
+     <width>301</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>上传Jar包</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections>
@@ -456,8 +469,8 @@
    <slot>accept()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>248</x>
-     <y>254</y>
+     <x>708</x>
+     <y>474</y>
     </hint>
     <hint type="destinationlabel">
      <x>157</x>
@@ -472,8 +485,8 @@
    <slot>reject()</slot>
    <hints>
     <hint type="sourcelabel">
-     <x>316</x>
-     <y>260</y>
+     <x>776</x>
+     <y>480</y>
     </hint>
     <hint type="destinationlabel">
      <x>286</x>

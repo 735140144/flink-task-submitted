@@ -45,4 +45,4 @@ def main(token, num):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run(app='sheepapi:app', host='127.0.0.1', port=18000, reload=True, debug=True)
+    uvicorn.run(app='sheepapi:app', host='0.0.0.0', port=18000, reload=True, debug=True)
