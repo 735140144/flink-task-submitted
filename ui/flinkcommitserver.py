@@ -62,10 +62,10 @@ async def start_flink(params: Params):
 
     if params.fromck == "yes":
         try:
-            # command = command + "-s hdfs://" + params.namespace + os.popen(
-            #     "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'") \
-            #     .readline().strip('\n')
-            command = command + "-s hdfs://" + params.namespace + "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'"
+            command = command + "-s hdfs://" + params.namespace + os.popen(
+                "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'") \
+                .readline().strip('\n')
+            # command = command + "-s hdfs://" + params.namespace + "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'"
         except:
             return reponse(code=302, data={'detail': "获取checkpoint目录异常"}, message="failed")
 
@@ -94,8 +94,8 @@ async def start_flink(params: Params):
         return reponse(code=303, data={'detail': "类或包不存在"}, message="failed")
 
     try:
-        # os.system(command)
-        print(command)
+        os.system(command)
+        # print(command)
     except:
         return reponse(code=304, data={'detail': "执行失败", 'command': command}, message="failed")
     finally:
