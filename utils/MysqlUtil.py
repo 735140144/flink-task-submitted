@@ -1,5 +1,8 @@
-from utils.MysqlThreadPool import get_my_connection
 from sqlalchemy import create_engine
+import pymysql
+from common import AshareConfig as AC
+from utils.MysqlThreadPool import get_my_connection
+
 """
 @作者/authpr:千载春秋书风华
 @创作日期/createDate:
@@ -10,6 +13,8 @@ from sqlalchemy import create_engine
 Copyright (c) 2022 person All rights reserved.
 """
 """执行语句查询有结果返回结果没有返回0；增/删/改返回变更数据条数，没有返回0"""
+
+
 class MySqLUtil(object):
     def __init__(self):
         self.db = get_my_connection()  # 从数据池中获取连接
@@ -147,9 +152,36 @@ class MySqLUtil(object):
 
 
 class PandasMysql:
-    def engine_create(self, host, user, passwd, port,db):
-        return create_engine('mysql+pymysql://' + user + ':' + passwd + '@' + host + ':'+port+'/' + db)
-# if __name__ == '__main__':
+    def engine_create(self, host, user, passwd, port, db):
+        return create_engine('mysql+pymysql://' + user + ':' + passwd + '@' + host + ':' + port + '/' + db)
+
+
+class Pymysql:
+    def __init__(self):
+        self.db = pymysql.connect(host=AC.DORIS_HOST,
+                                 user=AC.DORIS_USER,
+                                 port=19030,
+                                 password=AC.DORIS_PASSWD,
+                                 db=AC.DORIS_DB,
+                                 charset='utf8')
+
+    def readSql(self, sql, params=None):
+        connect = self.db
+        cur = connect.cursor()
+        cur.execute(sql, params)
+        fetchall = cur.fetchall()
+        cur.close()
+        connect.close()
+        return fetchall
+
+    def insertSql(self, sql, params=None):
+        connect = self.db
+        cur = connect.cursor()
+        cur.execute(sql, params)
+        cur.close()
+        connect.close()
+        return
+    # if __name__ == '__main__':
 # db = MySqLHelper()
 # TODO查询单条
 

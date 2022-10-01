@@ -1,7 +1,10 @@
 import time
 from datetime import datetime
+
 from retry import retry
+
 import getdfcf
+from function import UpdateIp
 
 
 # 1.检查是否是交易日,是运行，否sleep 2hour
@@ -11,6 +14,7 @@ import getdfcf
 @retry()
 def geti(topic):
     proxies = getdfcf.getip()
+    UpdateIp.upIpPool((1, proxies['http']))
     print(datetime.now().strftime('%Y%m%d'))
     getdfcf.getTradeDate(time.localtime(time.time()).tm_year)
     df = getdfcf.checkDate()

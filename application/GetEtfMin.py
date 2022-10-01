@@ -8,6 +8,7 @@ import time
 from datetime import datetime
 from retry import retry
 from pachong import getdfcf
+from function import UpdateIp
 
 
 # 1.检查是否是交易日,是运行，否sleep 2hour
@@ -17,6 +18,7 @@ from pachong import getdfcf
 @retry()
 def getetfmin(topic):
     proxies = getdfcf.getip()
+    UpdateIp.upIpPool((2, proxies['http']))
     print(datetime.now().strftime('%Y%m%d'))
     getdfcf.getTradeDate(time.localtime(time.time()).tm_year)
     df = getdfcf.checkDate()
