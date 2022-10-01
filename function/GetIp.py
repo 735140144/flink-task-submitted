@@ -11,5 +11,3 @@ def getIp():
     print(read_sql)
 
 
-getIp()
-getIp()

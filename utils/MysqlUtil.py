@@ -181,6 +181,38 @@ class Pymysql:
         cur.close()
         connect.close()
         return
+
+class LuckyConfDB:
+    def __init__(self):
+        self.db = pymysql.connect(host=AC.ALI_HOST,
+                                  user=AC.ALI_USER,
+                                  port=AC.ALI_PORT,
+                                  password=AC.ALI_PASSWD,
+                                  db=AC.Ali_DB,
+                                  charset='utf8')
+
+    def readSql(self, sql, params=None):
+        connect = self.db
+        cur = connect.cursor()
+        cur.execute(sql, params)
+        fetchall = cur.fetchall()
+        cur.close()
+        connect.close()
+        return fetchall
+
+    def insertSql(self, sql, params=None):
+        connect = self.db
+        cur = connect.cursor()
+        cur.execute(sql, params)
+        cur.close()
+        connect.close()
+        return
+
+
+
+
+
+
     # if __name__ == '__main__':
 # db = MySqLHelper()
 # TODO查询单条

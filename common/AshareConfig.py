@@ -69,3 +69,9 @@ DORIS_HOST = '172.16.0.101'
 DORIS_USER = 'root'
 DORIS_PASSWD = 'Ssymhp12#$'
 DORIS_DB = 'day_data'
+
+ALI_PORT = 53306
+ALI_HOST = "ali.luckyboy.cc"
+ALI_USER = "luckyboy"
+ALI_PASSWD = "Ssymhp12#$"
+Ali_DB = "luckyboy_conf"
