@@ -12,9 +12,10 @@ import sys
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMessageBox, QFileDialog
-import flinkpost
 import flinkcommitdb as commitdb
+import flinkpost
 import hdfsupload
+
 
 class Ui_Dialog(object):
     def setupUi(self, Dialog):
@@ -245,8 +246,8 @@ class Ui_Dialog(object):
         return
 
     def startYarn(self):
-        params={
-            'model':"yarn"
+        params = {
+            'model': "yarn"
         }
         res = flinkpost.flinkpost(params)
         msg_box = QMessageBox(QMessageBox.Information, '执行结果', res)
@@ -256,8 +257,10 @@ class Ui_Dialog(object):
         try:
             url = QFileDialog.getOpenFileNames(None, "请选择要上传的文件", r"D:\\", "Jar(*.jar);;All Files(*)")
             hdfsupload.hdfsupload(url[0][0])
-            hdfscheck = hdfsupload.hdfscheck(url[0][0])
-            msg_box = QMessageBox(QMessageBox.Information, '执行结果', hdfscheck)
+            conf = {'dwonpath':url[0][0]}
+            flinkdown = flinkpost.flinkdown(conf)
+            # hdfscheck = hdfsupload.hdfscheck(url[0][0])
+            msg_box = QMessageBox(QMessageBox.Information, '执行结果', flinkdown)
             msg_box.exec_()
         except:
             msg_box = QMessageBox(QMessageBox.Critical, '错误', '上传失败')
@@ -265,7 +268,7 @@ class Ui_Dialog(object):
         return
 
     def exit(self):
-        QMessageBox.about(None, "作者@Putin","欢迎下次光临🙂")
+        QMessageBox.about(None, "作者@Putin", "欢迎下次光临🙂")
         return
 
     def selectJar(self):
@@ -296,7 +299,7 @@ class Ui_Dialog(object):
         jar = self.jar.currentText()
         classentry = self.classentry.currentText()
         params = {}
-        if jar!="" and classentry!="":
+        if jar != "" and classentry != "":
             params["jar"] = jar
             params["classentry"] = classentry
             params["model"] = self.jobmodel.currentText()
@@ -322,7 +325,6 @@ class Ui_Dialog(object):
             self.textBrowser.clear()
             self.params = None
         return
-
 
 
 if __name__ == "__main__":

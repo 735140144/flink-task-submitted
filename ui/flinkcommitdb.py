@@ -8,11 +8,11 @@ import flinkcommitconf as conf
 
 class FLINKCOMMITDB:
     def __init__(self):
-        self.db = pymysql.connect(host=conf.ALI_HOST,
-                                  user=conf.ALI_USER,
-                                  port=conf.ALI_PORT,
-                                  password=conf.ALI_PASSWD,
-                                  db=conf.Ali_DB,
+        self.db = pymysql.connect(host=conf.CONF_HOST,
+                                  user=conf.CONF_USER,
+                                  port=conf.CONF_PORT,
+                                  password=conf.CONF_PASSWD,
+                                  db=conf.CONF_DB,
                                   charset='utf8')
 
     def readSql(self, sql, params=None):

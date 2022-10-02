@@ -12,3 +12,9 @@ def flinkpost(params):
     load = params
     req = requests.post(url, json.dumps(load))
     return req.text
+
+def flinkdown(params):
+    url = flinkcommitconf.POST_URL+"/download"
+    load = params
+    req = requests.post(url, json.dumps(load))
+    return req.text

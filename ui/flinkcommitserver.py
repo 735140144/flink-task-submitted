@@ -5,16 +5,17 @@
 """
 import os
 from typing import Union
-
 import uvicorn
 from fastapi import FastAPI, status
 from fastapi.responses import JSONResponse, Response
 from pydantic import BaseModel
 import flinkcommitconf as conf
+import hdfsupload
+
 
 class Params(BaseModel):
     namespace: str = conf.NAMESPACE
-    jarpath:str = conf.JAR_URL
+    jarpath: str = conf.LOCAL_PATH
     jar: str = None
     classentry: str = None
     appname: str = None
@@ -26,6 +27,7 @@ class Params(BaseModel):
     slotnum: str = None
     jbheap: str = None
     jboffheap: str = None
+    dwonpath: str = None
 
 
 app = FastAPI()
@@ -62,10 +64,11 @@ async def start_flink(params: Params):
 
     if params.fromck == "yes":
         try:
-            command = command + "-s hdfs://" + params.namespace + os.popen(
-                "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'") \
-                .readline().strip('\n')
-            # command = command + "-s hdfs://" + params.namespace + "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'"
+            strip = os.popen(
+                "hdfs dfs -ls /flink-checkpoints/" + params.ckname + "/* |sort -r -k6,7 | grep chk |head -1 | awk '{print $8}'").readline().strip(
+                '\n')
+            if strip != None or strip != '':
+                command = command + "-s hdfs://" + params.namespace + strip
         except:
             return reponse(code=302, data={'detail': "获取checkpoint目录异常"}, message="failed")
 
@@ -89,17 +92,26 @@ async def start_flink(params: Params):
             command = command + " jobmanager.memory.off-heap.size" + params.jboffheap
 
     if params.classentry is not None and params.jar is not None:
-        command = command + " -c " + params.classentry + " "+params.jarpath + params.jar
+        command = command + " -c " + params.classentry + " " + params.jarpath + params.jar
     else:
         return reponse(code=303, data={'detail': "类或包不存在"}, message="failed")
 
     try:
         os.system(command)
-        # print(command)
+        print(command)
     except:
         return reponse(code=304, data={'detail': "执行失败", 'command': command}, message="failed")
     finally:
         return reponse(data={'detail': params.classentry + "启动成功", 'command': command})
+
+
+@app.post('/flink/download')
+async def download(params: Params):
+    if params.dwonpath != None:
+        hdfscheck = hdfsupload.hdfscheck(params.dwonpath)
+        return reponse(data={'detail': "操作成功", '状态': hdfscheck})
+    else:
+        return reponse(code=305, data={'detail': "执行失败"}, message="failed")
 
 
 if __name__ == "__main__":
